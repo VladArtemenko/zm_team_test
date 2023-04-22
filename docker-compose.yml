@@ -1,10 +1,46 @@
 version: '3.9'
 
 services:
-  selenium:
-    image: seleniarm/standalone-chromium:latest
+  hub:
+    image: seleniarm/hub
     ports:
       - "4444:4444"
+      - "4443:4443"
+      - "4442:4442"
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == worker
+    environment:
+      GRID_MAX_SESSION: 5
+
+  chrome:
+    image: seleniarm/node-chromium
+    ports:
+      - '5900'
+    links:
+      - hub:hub
+    depends_on:
+     - hub
+    entrypoint: bash -c 'SE_OPTS="--host $$HOSTNAME" /opt/bin/entry_point.sh'
+    deploy:
+      replicas: 5
+      placement:
+        constraints:
+          - node.role == worker
+    environment:
+      SE_EVENT_BUS_HOST: hub
+      SE_EVENT_BUS_PUBLISH_PORT: "4442"
+      SE_EVENT_BUS_SUBSCRIBE_PORT: "4443"
+      NODE_MAX_INSTANCES: 5
+      NODE_MAS_SESSION: 1
+
+#  selenium:
+#    image: seleniarm/standalone-chromium:latest
+#    ports:
+#      - "4444:4444"
 
   postgresql:
     container_name: postgresql
@@ -26,4 +62,4 @@ services:
       - './logs:/logs'
     depends_on:
       - postgresql
-      - selenium
+#      - selenium

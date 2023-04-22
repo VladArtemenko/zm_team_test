@@ -44,18 +44,19 @@ class SQL(ABC):
     def _execute_request(self, request: str, limit: int = 100):
         with self._connection.cursor() as cursor:
             cursor.execute(request)
-            logger.debug(f'Execute DB request "{request}"')
+            logger.debug(f'Execute DB request: "{request}"')
             if not self._any_return:
                 self._connection.commit()
-                return None
+                result = None
             else:
                 res = cursor.fetchmany(limit)
-                return self._convert_response(res, columns=[column.name for column in cursor.description])
+                result = self._convert_response(res, columns=[column.name for column in cursor.description])
 
-    def __del__(self):
         if self._connection:
             self._connection.close()
-            logger.info('Close DB connection')
+        logger.info('Close DB connection')
+
+        return result
 
 
 class QueryInterface(SQL, ABC):
@@ -76,6 +77,7 @@ class SelectQuery(QueryInterface):
         request = "SELECT {columns} FROM {table} WHERE {conditions}"
         return request.format(columns=columns, table=table, conditions=conditions)
 
+    @property
     def _any_return(self) -> bool:
         return True
 
@@ -88,5 +90,6 @@ class UpdateQuery(QueryInterface):
         request = "UPDATE {table} SET {column} = {value} WHERE {condition}"
         return request.format(table=table, column=column, value=value, condition=condition)
 
+    @property
     def _any_return(self) -> bool:
         return False
