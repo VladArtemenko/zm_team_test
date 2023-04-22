@@ -1,20 +1,14 @@
 import time
-import psycopg2
+import local_logger
+import database_interface
+import os
+from links_getter import LinksGetter
 
-time.sleep(10)
+# Ждем когда поднимется Селениум и ПостгреСКЛ
+time.sleep(20)
 
-connection = psycopg2.connect(
-    host='postgresql',
-    user='admin',
-    password='12345',
-    database='profile',
-    port='5432'
-)
+logger = local_logger.LocalLogger(os.path.basename(__file__)).writer
 
-req = "SELECT * FROM public.cookie"
-# req = 'SELECT * FROM pg_catalog.pg_tables;'
+links = LinksGetter().get_random_links_from_google_news
 
-with connection.cursor() as cursor:
-    cursor.execute(req)
-    res = cursor.fetchmany(50)
-    print(res)
+import local_selenium

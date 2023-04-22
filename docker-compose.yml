@@ -1,6 +1,11 @@
 version: '3.9'
 
 services:
+  selenium:
+    image: seleniarm/standalone-chromium:latest
+    ports:
+      - "4444:4444"
+
   postgresql:
     container_name: postgresql
     build:
@@ -17,5 +22,8 @@ services:
     build:
       context: .
       dockerfile: ./code/python/Dockerfile
+    volumes:
+      - './logs:/logs'
     depends_on:
       - postgresql
+      - selenium
