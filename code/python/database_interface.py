@@ -65,6 +65,7 @@ class QueryInterface(SQL, ABC):
         """Метод для создания запроса разных типов в БД"""
 
     def run(self, *args, **kwargs):
+        """Публичный метод для запуска запроса к БД"""
         request = self._make_request(*args, **kwargs)
         return self._execute_request(request=request)
 

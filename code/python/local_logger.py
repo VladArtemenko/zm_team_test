@@ -2,6 +2,9 @@ import logging
 
 
 class LocalLogger:
+    """
+    Настройки логгера
+    """
     def __init__(self, name, log_level=logging.DEBUG):
         self._logger = logging.getLogger(name)
         self._logger.setLevel(log_level)

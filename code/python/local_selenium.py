@@ -9,6 +9,9 @@ logger = local_logger.LocalLogger(os.path.basename(__file__)).writer
 
 
 class Selenium:
+    """
+    Класс который подключается к контейнеру с Селениумом
+    """
     def __init__(self, cookies):
         options = webdriver.ChromeOptions()
         options.add_argument('--headless')
@@ -30,11 +33,13 @@ class Selenium:
         logger.info('Created remote selenium webdriver')
 
     def _scroll(self, length: int) -> None:
+        """Метод для скролла вниз с заданной задержкой"""
         time.sleep(length)
         self._driver.execute_script(f"window.scrollTo(0, document.body.scrollHeight)")
         logger.info(f'Make random delay in {length}s')
 
-    def open_link(self, url):
+    def open_link(self, url) -> list:
+        """Публичный метод для открытия ссылки, добавлению куки, обновлению странички и скроллу с задержкой"""
         self._driver.get(url)
 
         for cookie in self._cookies[0]:

@@ -4,6 +4,9 @@ from dataclasses import dataclass
 
 @dataclass(frozen=True)
 class DataBaseConnection:
+    """
+    ДатаКласс для хранения настроек подлкючения к БД
+    """
     host: str = 'postgresql'
     user: str = 'admin'
     password: str = '12345'
@@ -12,6 +15,9 @@ class DataBaseConnection:
 
 @dataclass(frozen=False)
 class Profile:
+    """
+    ДатаКласс для хранения описания профиля из БД
+    """
     id: int
     created_at_dttm: datetime.datetime
     cookie_value: list
@@ -21,5 +27,8 @@ class Profile:
 
 @dataclass(frozen=False)
 class Context:
+    """
+    ДатаКласс для хранения контекста (аргументы необходимые в рамках одного процесса)
+    """
     profile: Profile
     link: str

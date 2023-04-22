@@ -1,3 +1,7 @@
+"""
+Модуль отвечающий за получение 10 ссылок с гугл ньюс
+"""
+
 import requests
 from bs4 import BeautifulSoup
 import local_logger
@@ -14,7 +18,10 @@ class LinksGetter:
         self._url = url
 
     @property
-    def get_random_links_from_google_news(self):
+    def get_random_links_from_google_news(self) -> list:
+        """
+        Атрибут возвращающий список ссылок на новости с https://news.google.com/home
+        """
         google_response = requests.get(url=self._url)
         logger.info('Get HTML code from google news')
         soup = BeautifulSoup(google_response.text, 'html.parser')
